@@ -115,6 +115,11 @@ Ambiguous request → ask which skill. Do not guess.
 **Before any task in the Agents flow Notion teamspace**, read the operating contract. Log the
 task first, with `Projects = Agent flows`, or nobody will see it.
 
+**In any other Notion workspace** — an editor's own page, a fresh space — read
+`context/notion-workspace.md` first. It tells you how to check for the Work tracker and
+QA issue tracker and how to create them if they are missing. Task tracking is not
+optional just because the team's teamspace is absent.
+
 ## The two Notion identities
 
 Scripts reach Notion as the **integration** (`NOTION_TOKEN`), which sees only pages
