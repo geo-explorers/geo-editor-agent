@@ -1,0 +1,162 @@
+{
+  "exportedAt": "2026-09-18T19:33:58.383Z",
+  "rebuiltAt": "2026-09-21",
+  "catalogDb": "28ae8943f8ab4e5d8e7fa6dc4d8e05d6",
+  "note": "Maintainer-only, template and identity rows are not exported; tools/export-docs.mjs skips them by key.",
+  "docs": [
+    {
+      "key": "brain",
+      "file": "brain.md",
+      "level": "2 — All Geo agents",
+      "status": "Working guide",
+      "page": "3dc273e214eb8199858fc24af7c4560d"
+    },
+    {
+      "key": "claims",
+      "file": "CLAIMS.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb81748483f00d3273d938"
+    },
+    {
+      "key": "coordination",
+      "file": "coordination.md",
+      "level": "2 — All Geo agents",
+      "status": "Proposal to review",
+      "page": "3dc273e214eb81d09affcb2bfc86d66a"
+    },
+    {
+      "key": "debate-claim-curation",
+      "file": "debate-claim-curation.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dd273e214eb818a9c06d4a766982463"
+    },
+    {
+      "key": "execution",
+      "file": "EXECUTION.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb81709975f60e77110a7d"
+    },
+    {
+      "key": "geo-team-rules",
+      "file": "geo-team-rules.md",
+      "level": "2 — All Geo agents",
+      "status": "Working guide",
+      "page": "3dd273e214eb81b0ad50d3dd8be78177"
+    },
+    {
+      "key": "geo",
+      "file": "GEO.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb81af80c0fc2dbe738e94"
+    },
+    {
+      "key": "memory",
+      "file": "lessons.md",
+      "level": "2 — All Geo agents",
+      "status": "Working guide",
+      "page": "3dc273e214eb819db092d56339b18e7b"
+    },
+    {
+      "key": "mirrorcontract",
+      "file": "mirror-contract.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb813aa69dfd74ac07fd27"
+    },
+    {
+      "key": "notion",
+      "file": "NOTION.md",
+      "level": "2 — All Geo agents",
+      "status": "Working guide",
+      "page": "3dc273e214eb810bbfb2f9a473161adc"
+    },
+    {
+      "key": "ontology",
+      "file": "ONTOLOGY.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb8103a0ece3c9ee3add83"
+    },
+    {
+      "key": "priorities",
+      "file": "PRIORITIES.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb8181bb03d5c481b5595c"
+    },
+    {
+      "key": "publishcontract",
+      "file": "publication-contract.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb818aacf3c92e1146bd1a"
+    },
+    {
+      "key": "report-writing-standard",
+      "file": "report-writing.md",
+      "level": "1 — All agents",
+      "status": "Working guide",
+      "page": "3dd273e214eb81d5aba6d4f27da8c9ba"
+    },
+    {
+      "key": "role-content",
+      "file": "roles/role-content.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dd273e214eb8175a26fc1d37ce34af1"
+    },
+    {
+      "key": "role-data",
+      "file": "roles/role-data.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dd273e214eb8172b658ef711295514e"
+    },
+    {
+      "key": "role-project",
+      "file": "roles/role-project.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dd273e214eb81dd8f79da6173b21afe"
+    },
+    {
+      "key": "role-review",
+      "file": "roles/role-review.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dd273e214eb8119828df8d75ddd1b6f"
+    },
+    {
+      "key": "session",
+      "file": "SESSION.md",
+      "level": "2 — All Geo agents",
+      "status": "Working guide",
+      "page": "3dc273e214eb8168be80caa39abe69ff"
+    },
+    {
+      "key": "shared-rules",
+      "file": "shared-rules.md",
+      "level": "1 — All agents",
+      "status": "Working guide",
+      "page": "3dd273e214eb81668ef7f1edb2c9e4ee"
+    },
+    {
+      "key": "sources",
+      "file": "SOURCES.md",
+      "level": "3 — Agent role",
+      "status": "Working guide",
+      "page": "3dc273e214eb81f1aefdd6b86fc75d4f"
+    },
+    {
+      "key": "task-state",
+      "file": "templates/STATUS.md",
+      "level": "5 — Current task",
+      "status": "Template to fill in",
+      "page": "3dd273e214eb8110a3b2c94e8a0832b8"
+    }
+  ]
+}

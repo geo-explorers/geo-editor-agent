@@ -1,0 +1,19 @@
+# Secrets — never committed. Copy .env.example to .env and fill it in by hand.
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Run artifacts: campaign directories, extracts, logs, per-run output
+work/
+output/
+*.log
+*.dryrun.json
+*.publish.json
+campaigns/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

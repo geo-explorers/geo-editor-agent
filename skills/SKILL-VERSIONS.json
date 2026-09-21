@@ -1,0 +1,80 @@
+{
+  "_doc": "Approved version of each editor-facing skill. Regenerate with skill-dev/skill_versions.py generate after reviewing a change.",
+  "skills": {
+    "actionable/geo-claim-grouping": {
+      "version": "0.7.0",
+      "approved_commit": "add3a0cb7c494a3b2c35f7f204c37d8aa25de832",
+      "content_sha256": "752599f39b52b06aa7d325a08fe4f84be65075902e00fa47d49c4e1f8157568c"
+    },
+    "actionable/geo-clean": {
+      "version": "0.5.0",
+      "approved_commit": "88b62448baeb3de587b5997ee1083085ef678176",
+      "content_sha256": "75bfb4723f7219663ded1d5836b139c43c1c261bbb2176c0bc72f552596b688d"
+    },
+    "actionable/geo-discovery": {
+      "version": "0.1.1",
+      "approved_commit": "12fc0fb79136f648d320db77cbf49a62d5840ae7",
+      "content_sha256": "8c19551b8d15a2c7694144ac2b4a8a381b4fe8bc8c330d253511ad6e18bbc727"
+    },
+    "actionable/geo-mirror": {
+      "version": "0.12.0",
+      "approved_commit": "80ac742591cd60aca95824ea871a3349ee2d4673",
+      "content_sha256": "7a2ac98c4f7dd2af9296bfdce8f81e2e0ba1ce51db47bcb170996d67365c481b"
+    },
+    "actionable/geo-orchestrate": {
+      "version": "0.2.0",
+      "approved_commit": "8329034c51b504972c9cdf60ca12f3abae5c5b4c",
+      "content_sha256": "023b001f49241841bf0a79ca36458cf2a4c9989deb97b28d900cc69ec4a36dc3"
+    },
+    "actionable/geo-publish": {
+      "version": "0.11.0",
+      "approved_commit": "a2f9a153565adb926cd4d280226f5a723b7e2601",
+      "content_sha256": "2411ac99c1460e3bd8be53fcde77056cbf2a3c2febf57f883c439d3ac50476bb"
+    },
+    "non-actionable/daily-report": {
+      "version": "0.1.0",
+      "approved_commit": "5c1c5c22c2946ae1dbdd698e496f9951f2a0100f",
+      "content_sha256": "0f13aecd820756cca87d1eebd5677357fb5a00a6ce9cdf6caa0baa6fd83d47a4"
+    },
+    "non-actionable/geo-claim-grouping-notion": {
+      "version": "0.2.0",
+      "approved_commit": "add3a0cb7c494a3b2c35f7f204c37d8aa25de832",
+      "content_sha256": "ddd6f23688d5bce7847f89f9367a96578549b83f33a198fcd7e63a4546e9ed98"
+    },
+    "non-actionable/geo-describe": {
+      "version": "0.2.0",
+      "approved_commit": "fe0a1419f6ae4273988d69558014930d6a5628e5",
+      "content_sha256": "3ce74619445c9d01daf7ffcc226a2121f5943137c1cb4035c475868f465a9300"
+    },
+    "non-actionable/geo-mirror-and-group": {
+      "version": "1.0.0",
+      "approved_commit": "add3a0cb7c494a3b2c35f7f204c37d8aa25de832",
+      "content_sha256": "9da3312746ca716e60bffed36feccbd407b3b0e45811d9378d17487c079bb6ea"
+    },
+    "non-actionable/geo-press-review": {
+      "version": "0.5.3",
+      "approved_commit": "8329034c51b504972c9cdf60ca12f3abae5c5b4c",
+      "content_sha256": "3c21d5df84e962d95d90a46f5fd486141dfff908d5777624b6a5cfdd02cb3f88"
+    },
+    "non-actionable/geo-query": {
+      "version": "0.2.9",
+      "approved_commit": "f5b443f1940ec546fd1a5034e954ba1cc12da2c1",
+      "content_sha256": "c2cbe822a9a4d877073a29554d4866747e2aaf5fd137508a399628538b76572c"
+    },
+    "non-actionable/image-banner-recompose": {
+      "version": "0.2.0",
+      "approved_commit": "dd56a5e954aa4b18fc5cf896732b6cbf2395a315",
+      "content_sha256": "ea9e37588885018e2246020f7b885c792ff1b8bb73730fdda8edd01deb1ce6a5"
+    },
+    "non-actionable/notion-operations": {
+      "version": "1.0.1",
+      "approved_commit": "6e9f5f955c31f4555b083174636c2cfea1ba6948",
+      "content_sha256": "8482332082fd810de09dc5b7ab7328286877b223cf6f1dfe4548382ef0d80aec"
+    },
+    "non-actionable/ontology-advisor": {
+      "version": "0.1.0",
+      "approved_commit": "a2f1f9f2e7bb0949ea27ddbc30f60b9cfa7b6a87",
+      "content_sha256": "5ea2bb42ca7d873114e8278daa2890bc148f5460ac248bcf5a89b2a8082d592d"
+    }
+  }
+}
