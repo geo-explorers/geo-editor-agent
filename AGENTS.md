@@ -28,6 +28,12 @@ These apply to every agent in this toolkit, on every host.
    follow the applicable workflow. Read back results and report what was verified.
 7. Keep a recoverable task record: outcome, decisions, evidence, unresolved issues, owner
    and next step. Never describe a draft, a proposal or a failed write as completed work.
+   Anything wrong, surprising or unexplained goes in the **QA issue tracker** with severity,
+   urgency, evidence and a named **Owner** — create the tracker if the workspace has none
+   (`context/notion-workspace.md`). Mention it in your closing report; an issue nobody sees
+   is barely raised at all. Work that is real but not yours becomes a tracker row for the
+   agent that should run it — self-contained, owned by a person, left `Not started`. Queue
+   it; never start another agent yourself.
 8. Before writing or reviewing a report, read `docs/report-writing.md`.
 
 ## Hard rules
@@ -116,9 +122,16 @@ Ambiguous request → ask which skill. Do not guess.
 task first, with `Projects = Agent flows`, or nobody will see it.
 
 **In any other Notion workspace** — an editor's own page, a fresh space — read
-`context/notion-workspace.md` first. It tells you how to check for the Work tracker and
-QA issue tracker and how to create them if they are missing. Task tracking is not
-optional just because the team's teamspace is absent.
+`context/notion-workspace.md` first. Search for the Work tracker and QA issue tracker before
+assuming anything: reuse them if they exist, even under another name, and create them only if
+they genuinely do not. Task tracking is not optional just because the team's teamspace is
+absent.
+
+**Route every QA issue to a person**, in either workspace. By what the problem *is*:
+Geo core, the API, voting and execution → **Arturas**; ontology and content semantics —
+types, claim wording, topic hierarchy → **Armando** or **Moh**; agents, skills, mirrors
+and scripts → **Vytautas** or **Mantas**. Spanning two areas: pick whoever can act on the
+cause. Genuinely unclear: set Unassigned, say so, and ask the editor to route it.
 
 ## The two Notion identities
 
