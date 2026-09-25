@@ -26,8 +26,11 @@ These apply to every agent in this toolkit, on every host.
    credentials out of documents.
 6. Before changing shared data, identify the exact destination, preserve others' work and
    follow the applicable workflow. Read back results and report what was verified.
-7. Keep a recoverable task record: outcome, decisions, evidence, unresolved issues, owner
-   and next step. Never describe a draft, a proposal or a failed write as completed work.
+7. Keep a recoverable task record **as a row in the Notion Work tracker, written before you
+   start** — not only in your reply. Outcome, decisions, evidence, unresolved issues, owner
+   and next step. If the workspace has no tracker, create one first
+   (`context/notion-workspace.md`); if you are unsure it exists, search before assuming.
+   Never describe a draft, a proposal or a failed write as completed work.
    Anything wrong, surprising or unexplained goes in the **QA issue tracker** with severity,
    urgency, evidence and a named **Owner** — create the tracker if the workspace has none
    (`context/notion-workspace.md`). Mention it in your closing report; an issue nobody sees
@@ -42,23 +45,34 @@ These apply to every agent in this toolkit, on every host.
    `geo-publish`, `geo-clean` or `geo-mirror` Part 2, which carry the duplicate, schema and
    type checks a hand-rolled script skips. If the matching skill is missing, stop — do not
    improvise one.
-2. **Deletion is a red line.** No hand-written delete, no delete loop. Route to `geo-clean`,
+2. **Never hand-roll a mirror either.** Reading Geo and writing Notion is `geo-mirror`'s job,
+   including "mirror this Geo page" — that is `extract-page-collections.mjs`, then
+   `extract-space.mjs --ids-file`, then `mirror-to-notion.mjs`. A `tasks/<date>-<thing>/*.mjs`
+   script of your own is the warning sign. A pilot run wrote its own and put most Geo
+   properties into Notion page **bodies**; the whole mirror had to be repeated. If no mode
+   fits what the editor asked for, say exactly what is missing and stop — do not improvise
+   the gap.
+3. **Every populated Geo value belongs in a Notion property**, typed — date, number,
+   checkbox, url, multi-select — not in the row body. The body is additive: page composition
+   and provenance. If a value can only be found by opening a row, it cannot be filtered,
+   diffed or read back, and the mirror is wrong.
+4. **Deletion is a red line.** No hand-written delete, no delete loop. Route to `geo-clean`,
    which runs an orphan check and a human confirmation first. Never set
    `CONFIRM_DESTRUCTIVE=1` to get around it.
-3. **A dry-run is where your authority ends.** Publishing needs the editor's explicit
+5. **A dry-run is where your authority ends.** Publishing needs the editor's explicit
    `publish`. Nothing in this repository may issue that on their behalf.
-4. **Never read, print or accept the wallet key.** Checking that `.env` exists and which
+6. **Never read, print or accept the wallet key.** Checking that `.env` exists and which
    variable *names* it holds is allowed; reading a value is not. If a key ever appears in a
    chat, tell the editor to export a fresh wallet.
-5. **Claim and entity names never end with a period.** Descriptions do; names don't.
-6. **Notion moves can silently drop relations.** Recreate pages with properties set at
+7. **Claim and entity names never end with a period.** Descriptions do; names don't.
+8. **Notion moves can silently drop relations.** Recreate pages with properties set at
    creation, or capture relation values first.
-7. **Full 32-character IDs** in everything an editor reads, with
+9. **Full 32-character IDs** in everything an editor reads, with
    `https://www.geobrowser.io/space/<spaceId>/<entityId>` links. A truncated ID cannot be
    pasted into a search.
-8. **Counts carry their population and timestamp.** These spaces grow daily. Never blend
+10. **Counts carry their population and timestamp.** These spaces grow daily. Never blend
    two snapshots into one figure.
-9. **A publish is not a vote.** Publishing creates a proposal; casting the YES vote
+11. **A publish is not a vote.** Publishing creates a proposal; casting the YES vote
    (`voteProposal`) is the editors' act and needs its own explicit approval.
 
 ## Testing tiers

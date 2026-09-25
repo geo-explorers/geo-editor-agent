@@ -39,8 +39,13 @@ kept flipping between two formats.
    ```json
    { "workTracker": "<id>", "qaTracker": "<id>", "parentPage": "<id>" }
    ```
-6. **Then work normally:** log the task before you start, set it to In progress, and close it
-   with what you did and a link to where the result lives.
+6. **Then work normally:** log the task **before** you start — one row, `Not started` →
+   `In progress` → `Done`, closed with what you did and a link to where the result lives.
+   This is the step agents skip. A pilot run mirrored 128 entities across two Notion databases
+   and logged nothing at all, so no one could tell afterwards what had been asked for, what was
+   delivered, or which of the two attempts was the real one. **A task nobody can find did not
+   happen.** Log your own task even when the editor did not ask you to, even for a one-off, and
+   even when the work takes three minutes.
 
 ## The schemas — for a workspace that has none
 
@@ -127,6 +132,23 @@ agent-reported issues can be told apart.
 
 **Link it to your task** through the relation, and mention the issue in your closing report.
 An issue raised but never surfaced to the human is nearly as bad as one never raised.
+
+## Before a long Notion write: check the exact destination
+
+A 21-minute mirror run has already been spent before anyone discovered the destination page was
+not connected to the integration. Check first, in this order, and the check costs seconds:
+
+1. **Fetch the exact destination page by id** — not its parent, not a page beside it. Access is
+   granted per page: the parent being connected proves nothing about the child.
+2. **On a 404, stop and ask** for ⋯ → Connections → the integration, naming the page. Say
+   plainly that a 404 means *not connected*, not *missing* — the editor can see it in their
+   browser and will assume you are wrong otherwise.
+3. **Confirm you can write, not just read**, before a long run: create one row or one child
+   block, read it back, remove it. Read access does not imply write access.
+4. **Echo back what you are about to do** — the page title, the databases, the row counts — and
+   get a yes. An editor who pasted the wrong link finds out here, not twenty minutes in.
+
+If the editor changes the destination mid-task, re-run all four. The new page is a new grant.
 
 ## Leaving work for another agent
 
