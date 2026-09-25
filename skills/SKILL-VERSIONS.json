@@ -17,9 +17,9 @@
       "content_sha256": "8c19551b8d15a2c7694144ac2b4a8a381b4fe8bc8c330d253511ad6e18bbc727"
     },
     "actionable/geo-mirror": {
-      "version": "0.12.0",
+      "version": "0.13.0",
       "approved_commit": "80ac742591cd60aca95824ea871a3349ee2d4673",
-      "content_sha256": "7a2ac98c4f7dd2af9296bfdce8f81e2e0ba1ce51db47bcb170996d67365c481b"
+      "content_sha256": "926b4d73072adc5ba626cb7f2692c3cf7b322f08277e0dd9b212377c0ec5f5ea"
     },
     "actionable/geo-orchestrate": {
       "version": "0.2.0",

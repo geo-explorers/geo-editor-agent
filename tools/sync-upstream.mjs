@@ -27,6 +27,7 @@ const UPSTREAM_ONLY_AGENT_DOCS = ['MD-FILES.md', 'README.md'];
 // runs them. Removed after every sync so the tree stays lean (UPSTREAM.md lists them).
 const PRUNE = [
   'skill-dev/skill-quality-check', 'skill-dev/sync-skills.sh', 'skill-dev/README.md', 'skills/README.md',
+  'skill-dev/check_md_manifest.py',   // checks upstream's agents/MD-FILES.md, which is not carried over
   'scripts/check-space-list.ts', 'scripts/2026-07-28-sdk-v020-migration-check.ts',
 ];
 // Upstream agent definitions assume upstream's layout; these rewrites map them onto this one.

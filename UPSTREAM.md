@@ -7,8 +7,8 @@ the entry documents, `docs/`, `context/`, `.claude/`, `tools/` — is this repos
 
 ## The canonical toolkit
 
-**[geo-explorers/content-management](https://github.com/geo-explorers/content-management)** @ `cc319d2416a23de7b84d4ae9c7ef6b1d75847399`
-Vendored on: 2026-09-18 — also recorded in `.upstream-sha`. Licence: MIT (`LICENSE`).
+**[geo-explorers/content-management](https://github.com/geo-explorers/content-management)** @ `fd013a125acbe726e9a634209b5824b7b8d68211`
+Vendored on: 2026-09-25 — also recorded in `.upstream-sha`. Licence: MIT (`LICENSE`).
 
 | Vendored | Into |
 |---|---|
@@ -25,7 +25,9 @@ Vendored on: 2026-09-18 — also recorded in `.upstream-sha`. Licence: MIT (`LIC
 (run artifacts), `bun.lock`, `testing.ts`, `todo.md`, and the toolkit's own `CLAUDE.md`, `README.md`
 and `skills/README.md` (this repository has its own entry points). **Pruned after every sync**
 (`PRUNE` in `tools/sync-upstream.mjs`): `skill-dev/skill-quality-check/`, `skill-dev/sync-skills.sh`,
-`skill-dev/README.md`, `scripts/check-space-list.ts`, `scripts/2026-07-28-sdk-v020-migration-check.ts`
+`skill-dev/README.md`, `skill-dev/check_md_manifest.py` (it verifies upstream's `agents/MD-FILES.md`,
+which is not carried over, so here it could only ever fail), `scripts/check-space-list.ts`,
+`scripts/2026-07-28-sdk-v020-migration-check.ts`
 — maintainer tooling and dated diagnostics an editor's agent never runs. One upstream reference is
 left dangling on purpose: `geo-clean/reference.md` cites a one-off `scripts/2026-08-18-wipe-test-space.ts`
 that is not in upstream's committed tree either.

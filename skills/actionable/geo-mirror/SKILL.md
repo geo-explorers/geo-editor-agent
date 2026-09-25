@@ -2,7 +2,7 @@
 name: geo-mirror
 description: Mirror ANY Geo entity type from ANY space into Notion as linked databases, and (Part 2) sync reviewed Notion edits back to Geo. Type-generic — News stories, podcast Episodes, Events, People, etc. — one Notion database per entity type (primary + each related type), keyed by Geo ID so re-runs update in place. Read-only on Geo in Part 1. Triggers on "mirror to notion", "geo to notion", "export space to notion", "sync geo into notion", "mirror podcast into notion", "mirror episodes/events into notion".
 metadata:
-  version: "0.12.0"
+  version: "0.13.0"
   author: geobrowser
 ---
 
@@ -66,6 +66,40 @@ node --env-file=.env scripts/mirror-claims-topics.mjs --space <SPACE_ID> \
 - **Names are per space.** `Geo Name` is the `Name` value set **in the mirrored space**, not `entity.name` (Geo's denormalized display name, often from another space — WA "Strait of Hormuz blockade" vs entity.name "…blockage"). When the space has no Name of its own, `Geo Name` falls back to `entity.name` and `Geo Name source` = `Other space (fallback)`; never publish a fallback as this space's value.
 - **Verifying relations:** Notion's page API returns at most **25 items per relation property** — a read-back count below the extract is expected for topics with >25 claims; compare against `min(n, 25)` per row.
 
+## Mirror ONE Geo page's collections ("mirror this page into Notion")
+
+An editor pastes a geobrowser page URL and asks for *everything on it*. That page is not a
+type and not a space: it is **Blocks**, and a Data block holds **Collection item** relations.
+Each such block is a named collection the editor can see — "Accepted sources",
+"Source materials". Mirror one collection → one Notion database.
+
+**Do not hand-write this.** A pilot run that improvised its own scripts put most Geo properties
+into the Notion page *bodies* instead of columns, and had to be redone.
+
+```bash
+# 1. read the page: lists every collection, its item count, its type mix, and writes one ids file each
+node skills/actionable/geo-mirror/scripts/extract-page-collections.mjs <PAGE_ID> --space <SPACE_ID> --out-dir /tmp/pagemirror
+# it prints the exact next two commands per collection. Show the editor the counts first.
+# 2. extract one collection (flags as printed), then 3. mirror it
+node skills/actionable/geo-mirror/scripts/extract-space.mjs <SPACE_ID> --ids-file /tmp/pagemirror/<name>.ids.json \
+  --any-type --any-space --label "<collection name>" --out /tmp/pagemirror/<name>.extract.json
+node --env-file=.env skills/actionable/geo-mirror/scripts/mirror-to-notion.mjs /tmp/pagemirror/<name>.extract.json --parent <NOTION_PAGE_ID> --dry-run
+```
+
+Three flags exist only for this job:
+
+| Flag | Why a page collection needs it |
+|---|---|
+| `--any-type` | Collections mix types. One real collection held 49 items across **Publisher, Organization, Project, Public broadcaster, Federal agency, Public record, Company, Court**. Without it, `--ids-file` keeps only the one `--type` you named and reports the rest as off-type. One DB for the lot; the types survive as a `Geo types` multi-select. |
+| `--any-space` | A collection references entities resident in **other** spaces — 12 of those 49. Without it they are dropped as off-space. Kept rows get an **`Other space`** checkbox: their values aggregate across spaces, so they are **read-only — never rename them or sync them back**. |
+| `--label "<name>"` | Names the database after the collection ("Accepted sources"), not after a type. |
+
+Both flags require `--ids-file`; neither can sweep.
+
+**Verified 2026-09-25** on `da96a4c26e718bfa6c27c3b1f3c316cd` / `ece97658dd5b4f569af6a09156e3c672`
+("Sources and source materials for US conduct in Afghanistan"): 2 collections, 49 + 79 items,
+49/49 kept with `--any-space` (37 without it), 12 value columns, 8 types preserved.
+
 ## Accepted sources mirror
 
 "Source" is **not a Geo type** — it's any entity (Publisher, Project, Person, Think tank…) that a space tags **"Source accepted by the space"** (`044f2dc2ce504281a69afda8b5285853`), with the tag asserted **in that space**. `scripts/mirror-sources.mjs` mirrors every such entity across AI, World affairs, Relationships and US Politics (override with `--spaces "Name=id,…"`) into ONE inline DB `Accepted sources`, one row per entity:
@@ -107,6 +141,17 @@ It reports, rather than guesses, on: rows in the plan with no matching Notion ro
 > **Synced relation pairs: write ONE side only.** If the two properties are a synced pair (e.g. `New broader topics` ⇄ `New subtopics`), setting the child's parent auto-fills the parent's children list. Writing both sides doubles the cost for zero gain.
 
 > **Sharing requirement.** These scripts authenticate as the **integration** (`NOTION_TOKEN`), not as you. A database you can see in the Notion UI (or via MCP, which uses your own login) will still 404 for the script until that page/database is explicitly connected to the integration (page → ⋯ → Connections). The 404 message names the integration, so it's easy to spot.
+
+## Properties are columns — the body is never the only home for a value
+
+Every populated Geo value becomes a Notion **property** (column), typed: datetime → date,
+float/integer → number, boolean → checkbox, URL-looking text → url, else rich text. Relations to
+entities that get their own DB become Notion **relations**. The page **body** carries the Geo
+page composition — grouped sections, headings, claim bullets — and provenance. It is additive.
+
+If a value or relationship can only be found by opening a row, the mirror is wrong: it cannot be
+filtered, grouped, diffed, or read by Part 2. A pilot run that hand-rolled its own scripts did
+exactly that and had to be repeated. Route the job to these scripts instead.
 
 ## What gets mirrored — one database per entity type
 
