@@ -58,6 +58,7 @@ function fmt(type, v) {
     case 'date': return { date: { start: v } };
     case 'number': return { number: Number(v) };
     case 'checkbox': return { checkbox: Boolean(v) };
+    case 'multi_select': return { multi_select: (Array.isArray(v) ? v : [v]).filter(Boolean).map((n) => ({ name: String(n).slice(0, 100).replace(/,/g, ' ') })) };
     case 'url': return { url: String(v) };
     default: return { rich_text: [{ text: { content: clip(v) } }] };
   }
@@ -150,6 +151,14 @@ async function replaceChildren(pageId, children) {
   for (let i = 0; i < children.length; i += 100) await notion(`/blocks/${pageId}/children`, 'PATCH', { children: children.slice(i, i + 100) });
 }
 
+// A mixed-type collection (--any-type) lands in ONE database, so the Geo types stop
+// being the database name and have to survive as a column instead.
+const TYPES_COL = 'Geo types';
+const FOREIGN_COL = 'Other space';   // resident elsewhere: read-only, never rename or sync back
+const anyForeign = data.entities.some((e) => e.foreignSpace);
+const mixedTypes = new Set(data.entities.flatMap((e) => e.typeNames ?? []));
+const keepTypesCol = (data.type?.anyType === true) && mixedTypes.size > 0;
+
 // ── create DBs: primary first, then related types; relations patched after ──
 process.stderr.write('Creating databases…\n');
 const sfx = ` — ${data.space.name}`;
@@ -160,8 +169,11 @@ for (const t of order) {
   const props = { Name: { title: {} }, 'Geo ID': { rich_text: {} }, 'Geo URL': { url: {} }, 'Review status': REVIEW };
   for (const [name, { type }] of cols) props[name] = { [type]: {} };
   if (t === primaryType) props.Cover = { url: {} };
-  dbIds.set(t, await findOrCreateDb(`Geo ${t}${sfx}`, props));
-  process.stderr.write(`  Geo ${t}: ${dbIds.get(t)}\n`);
+  if (t === primaryType && keepTypesCol) props[TYPES_COL] = { multi_select: {} };
+  if (t === primaryType && anyForeign) props[FOREIGN_COL] = { checkbox: {} };
+  const title = (t === primaryType && data.type?.label) ? `${t}${sfx}` : `Geo ${t}${sfx}`;
+  dbIds.set(t, await findOrCreateDb(title, props));
+  process.stderr.write(`  ${title}: ${dbIds.get(t)}\n`);
 }
 // add relation columns on the primary DB now that target DBs exist
 const relProps = {};
@@ -187,6 +199,8 @@ for (const row of primaryRows) {
   const e = row._src ?? row;            // _src = full primary entity; else a same-type related stub
   const props = { Name: fmt('title', e.name), 'Geo ID': fmt('rich_text', e.geoId), 'Geo URL': fmt('url', `https://www.geobrowser.io/space/${data.space.id}/${e.geoId}`), 'Review status': { select: { name: 'To review' } }, Cover: fmt('url', e.coverUrl) };
   for (const [name, { type }] of cols) props[name] = fmt(type, e.values?.[name]?.value);
+  if (keepTypesCol) props[TYPES_COL] = fmt('multi_select', e.typeNames ?? []);
+  if (anyForeign) props[FOREIGN_COL] = { checkbox: Boolean(e.foreignSpace) };
   if (row._src) for (const [rname] of relTargetType) {   // relation links only exist on full primaries
     if (!relProps[rname]) continue;
     const ids = (e.relations?.[rname] || []).map((x) => pageIdByGeo.get(x.geoId)).filter(Boolean);

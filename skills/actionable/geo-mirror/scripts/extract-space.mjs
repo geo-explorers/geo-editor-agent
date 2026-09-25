@@ -13,6 +13,14 @@
 //   --related <ENTITY_ID>                     only entities with a relation to this (topic, podcast, …)
 //   --limit N                                 newest N
 //   --ids-file <path>                         exact entity ids (JSON {"ids":[…]} / […] or a plain list)
+//   --any-type                                with --ids-file: keep every id whatever its type (a mixed
+//                                             Geo collection). One DB for the lot, types kept as a column.
+//   --any-space                               with --ids-file: keep ids that live in OTHER spaces too. A
+//                                             collection on a page routinely references entities resident
+//                                             elsewhere; without this they are dropped as off-space. Their
+//                                             values then aggregate across spaces, so such rows are
+//                                             READ-ONLY — never use them for renames or Part 2 sync-back.
+//   --label "<name>"                          names the Notion database (use the Geo collection's name)
 //   --all                                     explicit whole-type override (rarely wanted)
 //   --date-prop "<name>"                      override the date property (auto: Publish datetime / Air date)
 // Examples:
@@ -38,8 +46,22 @@ const related = opt('--related');
 const dateProp = opt('--date-prop');
 const limit = parseInt(opt('--limit', '0')) || 0;
 const idsFile = opt('--ids-file');
+const anyType = args.includes('--any-type');
+const anySpace = args.includes('--any-space');
+const label = opt('--label');
 const allFlag = args.includes('--all');
 const outFile = opt('--out');
+
+// --any-type has no type to sweep, so it needs an explicit id list.
+if (anySpace && !idsFile) {
+  console.error('--any-space requires --ids-file: the whole-type sweep is space-scoped by the API.');
+  process.exit(2);
+}
+if (anyType && !idsFile) {
+  console.error('--any-type requires --ids-file: without a type there is nothing to sweep.\n' +
+    'Get the ids from a page\'s collections with extract-page-collections.mjs, then pass them here.');
+  process.exit(2);
+}
 
 // SAFETY GATE — refuse an unbounded whole-type mirror.
 if (!since && !until && !related && !limit && !allFlag && !idsFile) {
@@ -77,13 +99,14 @@ const typeNameResolved = meta.type?.name ?? '(type)';
 
 // ── sweep primary entities (scoped by type+space; bounded nested relations) ──
 process.stderr.write(`Space: ${spaceName} (${spaceId}) · type ${typeId}\n`);
-const ENTITY_FIELDS = `id name
+const ENTITY_FIELDS = `id name types { name }
         values(first: 30) { nodes { property { id name dataTypeName } text datetime float integer boolean } }
         relations(first: 200) { nodes { type { id name } toEntity { id name types { name } } } }`;
 const IDS_BATCH = 25;            // aliased entity(id:) per request — relations(first:200) makes these heavy
 
 const raw = [];
 let idsScope = null;   // records how an --ids-file run was scoped, for the extract JSON
+let foreignIds = new Set();   // ids kept by --any-space that are resident elsewhere
 if (idsFile) {
   // ── scoped extract from a fixed id list ────────────────────────────────────
   // Skips the whole-type sweep entirely. Every other scope flag (--since/--related/
@@ -98,6 +121,7 @@ if (idsFile) {
   if (!wanted.length) { console.error(`--ids-file ${idsFile}: no 32-hex entity ids found (expects JSON {"ids":[…]} or […], or a whitespace/comma separated list)`); process.exit(2); }
   process.stderr.write(`ids-file: ${wanted.length} unique id(s)\n`);
   const missing = [], offType = [], offSpace = [];
+  const foreign = new Set();   // --any-space: kept, but resident in another space
   for (let i = 0; i < wanted.length; i += IDS_BATCH) {
     const chunk = wanted.slice(i, i + IDS_BATCH);
     const data = await gql('{' + chunk.map((id, k) => `e${k}: entity(id:"${id}"){ typeIds spaceIds ${ENTITY_FIELDS} }`).join(' ') + '}');
@@ -105,8 +129,9 @@ if (idsFile) {
       const e = data[`e${k}`];
       // entity(id:) never returns null on this API — an unknown id comes back empty
       if (!e || !((e.typeIds ?? []).length || (e.spaceIds ?? []).length)) { missing.push(id); return; }
-      if (!(e.spaceIds ?? []).includes(spaceId)) { offSpace.push(id); return; }
-      if (!(e.typeIds ?? []).includes(typeId)) { offType.push(id); return; }
+      if (!anySpace && !(e.spaceIds ?? []).includes(spaceId)) { offSpace.push(id); return; }
+      if (anySpace && !(e.spaceIds ?? []).includes(spaceId)) foreign.add(id);
+      if (!anyType && !(e.typeIds ?? []).includes(typeId)) { offType.push(id); return; }
       raw.push(e);
     });
     process.stderr.write(`\rfetched ${raw.length}/${wanted.length} entities`);
@@ -115,9 +140,11 @@ if (idsFile) {
   const warn = (list, why) => { if (list.length) process.stderr.write(`⚠ ${list.length} id(s) ${why}: ${list.slice(0, 5).join(', ')}${list.length > 5 ? ' …' : ''}\n`); };
   warn(missing, 'did not resolve (deleted, or never existed)');
   warn(offSpace, `are not resident in space ${spaceId}`);
-  warn(offType, `are not type ${typeId}`);
-  idsScope = { requested: wanted.length, resolved: raw.length, missing: missing.length, offSpace: offSpace.length, offType: offType.length };
-  if (!raw.length) { console.error('--ids-file matched no entities of the requested type in this space'); process.exit(2); }
+  if (foreign.size) process.stderr.write(`ℹ ${foreign.size} kept id(s) live in another space — values read across spaces, so those rows are read-only (never rename or sync them back)\n`);
+  warn(offType, `are not type ${typeId}`);   // never populated under --any-type
+  foreignIds = foreign;
+  idsScope = { requested: wanted.length, resolved: raw.length, missing: missing.length, offSpace: offSpace.length, offType: offType.length, foreignSpace: [...foreign] };
+  if (!raw.length) { console.error(anyType ? '--ids-file matched no entities resident in this space' : '--ids-file matched no entities of the requested type in this space'); process.exit(2); }
 } else {
   let after = null;
   for (;;) {
@@ -155,7 +182,8 @@ let primary = raw.map((e) => {
   }
   let coverId = null;
   for (const cn of COVER_REL_NAMES) { if (relsByType[cn]?.length) { coverId = relsByType[cn][0].geoId; break; } }
-  return { geoId: e.id, name: e.name,
+  return { geoId: e.id, name: e.name, typeNames: (e.types ?? []).map((t) => t.name).filter(Boolean),
+    foreignSpace: foreignIds.has(e.id) || undefined,
     values: collectValues(e.values.nodes), relations: relsByType, coverImageId: coverId, coverUrl: null,
     dateValue: dateOf(e) };
 });
@@ -233,7 +261,7 @@ for (const e of primary) { delete e.coverImageId; delete e.dateValue; }
 
 const result = {
   space: { id: spaceId, name: spaceName },
-  type: { id: typeId, name: typeNameResolved },
+  type: { id: anyType ? null : typeId, name: label ?? (anyType ? 'Items' : typeNameResolved), label: label ?? null, anyType },
   scope: { since: since ?? null, until: until ?? null, related: related ?? null, limit: limit || null, dateProp: effectiveDateProp ?? null, idsFile: idsFile ?? null, ids: idsScope },
   extractedAt: new Date().toISOString(),
   counts: { entities: primary.length, related: Object.keys(related_out).length },
