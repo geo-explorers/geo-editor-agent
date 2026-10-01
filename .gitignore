@@ -14,6 +14,23 @@ output/
 *.publish.json
 campaigns/
 
+# Local Notion workspace IDs the agent records (context/notion-workspace.md)
+.notion-workspace.json
+
+# Skill script outputs that land in the repository root by default
+/plan.json
+/*.ids.json
+/harvest.json
+/candidates.json
+/profiles.json
+/theme_gaps.json
+/emergent_themes.json
+/drafts.json
+/published.json
+/dashboard.json
+# geo-claim-grouping discovery runs (dated folders; dated scripts stay committable)
+/scripts/*-similar-claims-*/
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

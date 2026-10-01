@@ -15,8 +15,23 @@ Geo account. They need your private key in `.env`.
 3. Open `.env` in the repository folder with any text editor. Paste the key after
    `GEO_PRIVATE_KEY=`. Save.
 
+**Keep the key in `.env` only while you publish.** Lookups, press reviews, mirrors and claim
+grouping never need it, and those are the sessions that read untrusted text from Geo, Notion and
+the web. If the key isn't in `.env`, an injected instruction in one of them has nothing to
+steal. Paste it at the start of a publishing session; when you're done, put the placeholder back:
+
+```
+GEO_PRIVATE_KEY="0x<private_key>"
+```
+
+While the placeholder is in place the doctor reports read-only mode, and every read-only skill
+keeps working.
+
 **Never paste the key into a chat, on any tool. Your agent must never ask for it.** If a key
-ever lands in a chat, export a fresh wallet and replace it.
+ever lands in a chat, treat it as compromised. Exporting the wallet again returns the same key,
+so it cannot be rotated: stop publishing with it, warn your co-editors to vote NO on anything
+unexpected, create a new Geo account, and ask them to add the new identity to your spaces and
+remove the old one.
 
 `.env` is ignored by git and will never be committed. The variable name is `GEO_PRIVATE_KEY`;
 older guides that say `PK` are out of date and silently stopped working in August 2026.
@@ -88,3 +103,18 @@ Keep the connection scoped to the Agents flow teamspace. The integration token i
 workspace-wide credential in the sense that anything connected to it is reachable by every
 script that holds the token — including a script an agent writes. Connect only what the work
 needs.
+
+Give it the fewest capabilities too. Whoever owns the integration sets them in **Settings →
+Connections → Develop or manage integrations → (the integration) → Capabilities**:
+
+- Keep **Read content**.
+- Keep **Update content** and **Insert content** only while someone runs the mirror or
+  claim-grouping writes. Lookups and press reviews need read access only.
+- Turn the **comment** capabilities off. No script reads or writes comments.
+- Set **user information** to **No user information**. If the doctor's Notion check fails
+  afterwards, raise it to *Read user information without email addresses*.
+
+Then review which pages are connected and disconnect anything the scripts don't use. Check
+afterwards: the doctor still reaches Notion, and a mirror dry-run still works. The main risk is
+write access: anyone holding the token, or a tricked agent, could quietly rewrite connected
+pages, including the documents agents are told to follow.
