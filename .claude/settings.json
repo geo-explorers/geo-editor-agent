@@ -1,16 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "0"
+  },
   "permissions": {
     "disableBypassPermissionsMode": "disable",
     "allow": [
       "Bash(node tools/doctor.mjs)",
       "Bash(node --env-file=.env tools/doctor.mjs)",
       "Bash(node --env-file=.env scripts/notion-read.mjs *)",
-      "Bash(npm ci --ignore-scripts)",
-      "PowerShell(node tools/doctor.mjs)",
-      "PowerShell(node --env-file=.env tools/doctor.mjs)",
-      "PowerShell(node --env-file=.env scripts/notion-read.mjs *)",
-      "PowerShell(npm ci --ignore-scripts)"
+      "Bash(node lib/gql-cli.mjs *)",
+      "Bash(npm ci --ignore-scripts)"
     ],
     "ask": [
       "Bash(*--publish*)",
@@ -28,34 +28,27 @@
       "Bash(npm install *)",
       "Bash(npm i *)",
       "Bash(npm add *)",
-      "PowerShell(*--publish*)",
-      "PowerShell(*--prune*)",
-      "PowerShell(*--clear-root*)",
-      "PowerShell(*CONFIRM_DESTRUCTIVE*)",
-      "PowerShell(*--env-file*.env.geo-publish*)",
-      "PowerShell(node *inject-publish-example*)",
-      "PowerShell(node *publish_gaps*)",
-      "PowerShell(node *build_dashboard*)",
-      "PowerShell(node *sync-upstream*)",
-      "PowerShell(node *export-docs*)",
-      "PowerShell(git push *)",
-      "PowerShell(npx *)",
-      "PowerShell(npm install *)",
-      "PowerShell(npm i *)",
-      "PowerShell(npm add *)"
+      "Bash(*scripts/20*)",
+      "Bash(*--env-file* *.ts*)",
+      "Edit(scripts/**)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(grep *)",
+      "Bash(diff *)"
     ],
     "deny": [
+      "PowerShell",
       "Read(.env)",
       "Read(.env.*)",
       "Read(!.env.example)",
       "Bash(curl *)",
       "Bash(curl.exe *)",
       "Bash(wget *)",
-      "PowerShell(Invoke-WebRequest *)",
-      "PowerShell(Invoke-RestMethod *)",
-      "PowerShell(curl *)",
-      "PowerShell(curl.exe *)",
-      "PowerShell(wget *)"
+      "Bash(*--env-file* -e *)",
+      "Bash(*--env-file* --eval *)",
+      "Bash(*--env-file* -p *)",
+      "Bash(*--env-file* --print *)"
     ]
   }
 }
