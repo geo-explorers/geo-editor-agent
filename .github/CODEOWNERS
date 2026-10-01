@@ -1,0 +1,54 @@
+# CODEOWNERS — geo-editor-agent
+#
+# Pairs with the ruleset on `main` ("require review from Code Owners").
+# Every path below needs an approving review from a listed owner before it
+# can merge. Owners cannot approve their own pull request, so keep at least
+# two people here.
+#
+# Rules: later lines win over earlier ones. Owners must have write access.
+# Keep this file on the default branch; GitHub reads it from there.
+
+# Default: everything in the repository is owned. This is the "every
+# instruction path" guarantee — any new file is covered automatically.
+*                         @MVytautas @MantasTech @mufasasa
+
+# ---- Agent instruction entry points ---------------------------------------
+/AGENTS.md                @MVytautas @MantasTech @mufasasa
+/CLAUDE.md                @MVytautas @MantasTech @mufasasa
+/README.md                @MVytautas @MantasTech @mufasasa
+/SETUP.md                 @MVytautas @MantasTech @mufasasa
+/UPSTREAM.md              @MVytautas @MantasTech @mufasasa
+/knowledge-graph-ontology.md @MVytautas @MantasTech @mufasasa
+
+# ---- Host configuration: permissions, hooks, subagents, skill stubs -------
+/.claude/                 @MVytautas @MantasTech @mufasasa
+
+# ---- Skill contracts and the scripts they run -----------------------------
+/skills/                  @MVytautas @MantasTech @mufasasa
+/skill-dev/               @MVytautas @MantasTech @mufasasa
+
+# ---- Instruction documents, context pack, config --------------------------
+/docs/                    @MVytautas @MantasTech @mufasasa
+/context/                 @MVytautas @MantasTech @mufasasa
+/config/                  @MVytautas @MantasTech @mufasasa
+/documentation/           @MVytautas @MantasTech @mufasasa
+
+# ---- Runtime, tooling, install and upstream sync --------------------------
+/src/                     @MVytautas @MantasTech @mufasasa
+/lib/                     @MVytautas @MantasTech @mufasasa
+/scripts/                 @MVytautas @MantasTech @mufasasa
+/tools/                   @MVytautas @MantasTech @mufasasa
+/validate_migration.ts    @MVytautas @MantasTech @mufasasa
+/.upstream-sha            @MVytautas @MantasTech @mufasasa
+
+# ---- Dependencies, environment template, ignore rules ---------------------
+/package.json             @MVytautas @MantasTech @mufasasa
+/package-lock.json        @MVytautas @MantasTech @mufasasa
+/tsconfig.json            @MVytautas @MantasTech @mufasasa
+/.env.example             @MVytautas @MantasTech @mufasasa
+/.gitignore               @MVytautas @MantasTech @mufasasa
+/.npmrc                   @MVytautas @MantasTech @mufasasa
+
+# ---- GitHub itself: this file, workflows, security policy ----------------
+/.github/                 @MVytautas @MantasTech @mufasasa
+/SECURITY.md              @MVytautas @MantasTech @mufasasa
