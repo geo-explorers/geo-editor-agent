@@ -37,10 +37,34 @@ them can publish; the editor does that in this session.
 - Load env only through Node's flag: `node --env-file=.env …`. There is no `dotenv` wiring
   in the skill scripts, and a token must never be passed on the command line.
 - Node **22+**. Its type-stripping runs the `.ts` skill scripts directly; `bun` is not used.
-- `.claude/settings.json` pre-approves the skill and tool scripts. Anything outside those
-  patterns will prompt — that is deliberate.
 - Long writes (a 250-row mirror is ~9 minutes) run in the background with progress
   polling, never in a silent foreground stretch.
+
+## What `.claude/settings.json` allows
+
+The rules apply to both the Bash and the PowerShell tool.
+
+- **Runs without asking:** `tools/doctor.mjs`, `scripts/notion-read.mjs` and
+  `npm ci --ignore-scripts`. Every other command prompts.
+- **Always asks, in every mode including auto:** any command containing `--publish`,
+  `--prune`, `--clear-root` or `CONFIRM_DESTRUCTIVE`; anything that loads
+  `.env.geo-publish`; the scripts that publish without a flag (`inject-publish-example`,
+  and geo-discovery's `publish_gaps` and `build_dashboard`); `tools/sync-upstream.mjs` and
+  `tools/export-docs.mjs`; `git push`, `npx` and `npm install`.
+- **Blocked:** reading `.env` or any `.env.*` file other than `.env.example` — through the
+  file tools and through shell commands such as `cat`, `grep` and `ls` — and `curl`,
+  `wget`, `Invoke-WebRequest` and `Invoke-RestMethod`.
+
+Some skills check setup with `grep … .env`, `ls .env` or `curl`. Those checks are blocked
+here. Use these instead; the first two run without asking and never print a value:
+
+| A skill tells you to | Run instead |
+|---|---|
+| check that `NOTION_TOKEN` or the wallet key is set | `node --env-file=.env tools/doctor.mjs` — reports whether `NOTION_TOKEN` and `GEO_PRIVATE_KEY` are set, still placeholders, or missing. It reads `.env` only, so a key kept in `.env.geo-publish` shows as not set there |
+| confirm the Notion token works (`curl … /v1/users/me`) | `node --env-file=.env scripts/notion-read.mjs whoami` |
+| query Geo GraphQL with `curl` | `node lib/gql-cli.mjs '<query>'`, the canonical client |
+
+A blocked check is not a missing key or token. Never report one as the other.
 
 ## Verify before you trust
 
