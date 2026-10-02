@@ -37,10 +37,44 @@ them can publish; the editor does that in this session.
 - Load env only through Node's flag: `node --env-file=.env …`. There is no `dotenv` wiring
   in the skill scripts, and a token must never be passed on the command line.
 - Node **22+**. Its type-stripping runs the `.ts` skill scripts directly; `bun` is not used.
-- `.claude/settings.json` pre-approves the skill and tool scripts. Anything outside those
-  patterns will prompt — that is deliberate.
 - Long writes (a 250-row mirror is ~9 minutes) run in the background with progress
   polling, never in a silent foreground stretch.
+
+## What `.claude/settings.json` allows
+
+The PowerShell tool is switched off for this repository; every shell command goes through the
+Bash tool. If it is ever re-enabled, mirror every Bash rule as a `PowerShell(…)` rule first.
+
+- **Runs without asking:** `tools/doctor.mjs`, `scripts/notion-read.mjs`, `lib/gql-cli.mjs`
+  and `npm ci --ignore-scripts`. Every other command prompts, or in auto mode goes to the
+  safety classifier.
+- **Always asks — in every mode including auto, and even after "don't ask again":**
+  - any command containing `--publish`, `--prune`, `--clear-root` or `CONFIRM_DESTRUCTIVE`,
+    and the scripts that publish without a flag (`inject-publish-example`, and
+    geo-discovery's `publish_gaps` and `build_dashboard`);
+  - any run of a dated script under `scripts/` — this is how geo-publish and geo-clean
+    scripts run, dry-run and publish alike, so the publish re-run can never ride on an
+    approval given to the dry-run;
+  - `git push`;
+  - the shell commands `cat`, `head`, `tail`, `grep` and `diff`. Claude Code would otherwise
+    run them without asking, and a wildcard path or a recursive search could reach `.env`.
+    Read files with the Read tool and search with the Grep tool instead; both run without
+    asking and both honour the `.env` block.
+- **Blocked:** reading, copying or writing `.env` or any `.env.*` file other than
+  `.env.example` — through the file tools and through any shell command that names the
+  file — and `curl` and `wget`.
+
+Some skills check setup with `grep … .env`, `ls .env` or `curl`. Those checks are blocked
+here. Use these instead; they run without asking and never print a value:
+
+| A skill tells you to | Run instead |
+|---|---|
+| check that `NOTION_TOKEN` or the wallet key is set | `node --env-file=.env tools/doctor.mjs` — reports whether `NOTION_TOKEN` and `GEO_PRIVATE_KEY` are set, still placeholders, or missing. It reads `.env` only, so a key kept in `.env.geo-publish` shows as not set there |
+| confirm the Notion token works (`curl … /v1/users/me`) | `node --env-file=.env scripts/notion-read.mjs whoami` |
+| query Geo GraphQL with `curl` | `node lib/gql-cli.mjs '<query>'`, the canonical client |
+| read a file with `cat` or `head`, or search with `grep` | the Read tool and the Grep tool |
+
+A blocked check is not a missing key or token. Never report one as the other.
 
 ## Verify before you trust
 

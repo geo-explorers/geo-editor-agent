@@ -20,11 +20,16 @@ All paths are relative to the **repository root**; run every script from there.
 
 ## Credentials
 
-All in `.env`. Confirm a variable *exists*; never read or print a value.
+All in `.env`. Confirm a variable *exists*; never read or print a value. The doctor reports
+whether `NOTION_TOKEN` and `GEO_PRIVATE_KEY` are set, still placeholders, or missing, without
+printing any value:
 
 ```bash
-grep -oE '^[A-Za-z_][A-Za-z0-9_]*' .env | sort -u
+node --env-file=.env tools/doctor.mjs
 ```
+
+In Claude Code, reading `.env` directly — with the file tools or with `cat`, `grep` or `ls` —
+is blocked by `.claude/settings.json`.
 
 | Variable | Used by | Notes |
 |---|---|---|
