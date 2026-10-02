@@ -46,24 +46,23 @@ The PowerShell tool is switched off for this repository; every shell command goe
 Bash tool. If it is ever re-enabled, mirror every Bash rule as a `PowerShell(…)` rule first.
 
 - **Runs without asking:** `tools/doctor.mjs`, `scripts/notion-read.mjs`, `lib/gql-cli.mjs`
-  and `npm ci --ignore-scripts`. Every other command prompts.
+  and `npm ci --ignore-scripts`. Every other command prompts, or in auto mode goes to the
+  safety classifier.
 - **Always asks — in every mode including auto, and even after "don't ask again":**
-  - any command containing `--publish`, `--prune`, `--clear-root` or `CONFIRM_DESTRUCTIVE`;
-    anything that loads `.env.geo-publish`; the scripts that publish without a flag
-    (`inject-publish-example`, and geo-discovery's `publish_gaps` and `build_dashboard`);
-    `tools/sync-upstream.mjs` and `tools/export-docs.mjs`; `git push`, `npx` and `npm install`;
-  - any run of a dated script under `scripts/`, and any `.ts` file run with `--env-file` —
-    this is how geo-publish and geo-clean scripts run, dry-run and publish alike, so the
-    publish re-run can never ride on an approval given to the dry-run;
-  - every Edit or Write under `scripts/`, so the `DRY_RUN` flip is always shown as a diff;
+  - any command containing `--publish`, `--prune`, `--clear-root` or `CONFIRM_DESTRUCTIVE`,
+    and the scripts that publish without a flag (`inject-publish-example`, and
+    geo-discovery's `publish_gaps` and `build_dashboard`);
+  - any run of a dated script under `scripts/` — this is how geo-publish and geo-clean
+    scripts run, dry-run and publish alike, so the publish re-run can never ride on an
+    approval given to the dry-run;
+  - `git push`;
   - the shell commands `cat`, `head`, `tail`, `grep` and `diff`. Claude Code would otherwise
     run them without asking, and a wildcard path or a recursive search could reach `.env`.
     Read files with the Read tool and search with the Grep tool instead; both run without
     asking and both honour the `.env` block.
 - **Blocked:** reading, copying or writing `.env` or any `.env.*` file other than
   `.env.example` — through the file tools and through any shell command that names the
-  file; `curl` and `wget`; and `node -e` / `-p` one-liners with `--env-file`, so nothing can
-  print a loaded value.
+  file — and `curl` and `wget`.
 
 Some skills check setup with `grep … .env`, `ls .env` or `curl`. Those checks are blocked
 here. Use these instead; they run without asking and never print a value:

@@ -1,8 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "env": {
-    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "0"
-  },
   "permissions": {
     "disableBypassPermissionsMode": "disable",
     "allow": [
@@ -17,20 +14,11 @@
       "Bash(*--prune*)",
       "Bash(*--clear-root*)",
       "Bash(*CONFIRM_DESTRUCTIVE*)",
-      "Bash(*--env-file*.env.geo-publish*)",
       "Bash(node *inject-publish-example*)",
       "Bash(node *publish_gaps*)",
       "Bash(node *build_dashboard*)",
-      "Bash(node *sync-upstream*)",
-      "Bash(node *export-docs*)",
-      "Bash(git push *)",
-      "Bash(npx *)",
-      "Bash(npm install *)",
-      "Bash(npm i *)",
-      "Bash(npm add *)",
       "Bash(*scripts/20*)",
-      "Bash(*--env-file* *.ts*)",
-      "Edit(scripts/**)",
+      "Bash(git push *)",
       "Bash(cat *)",
       "Bash(head *)",
       "Bash(tail *)",
@@ -44,11 +32,7 @@
       "Read(!.env.example)",
       "Bash(curl *)",
       "Bash(curl.exe *)",
-      "Bash(wget *)",
-      "Bash(*--env-file* -e *)",
-      "Bash(*--env-file* --eval *)",
-      "Bash(*--env-file* -p *)",
-      "Bash(*--env-file* --print *)"
+      "Bash(wget *)"
     ]
   }
 }
