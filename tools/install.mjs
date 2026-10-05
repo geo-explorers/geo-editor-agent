@@ -3,7 +3,7 @@
 //
 // What it does, in order, and stops where only a human can act:
 //   1. checks Node 22+
-//   2. npm ci                       (the Geo SDK the skill scripts import)
+//   2. npm ci --ignore-scripts      (the Geo SDK the skill scripts import; no dependency install scripts run)
 //   3. .env from .env.example        (created only if absent; NEVER overwritten; key left blank)
 //   4. regenerates skill stubs       (.claude/skills — Claude Code discovery)
 //   5. optionally deploys the full skills to other hosts (--host codex | claude-desktop | all)
@@ -34,11 +34,11 @@ console.log(`  ✓ node ${process.versions.node}`);
 
 step('2/6  Dependencies');
 if (skipNpm) console.log('  – skipped (--skip-npm)');
-else { run('npm', ['ci', '--no-audit', '--no-fund']); console.log('  ✓ npm ci'); }
+else { run('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund']); console.log('  ✓ npm ci --ignore-scripts'); }
 
 step('3/6  .env');
 if (existsSync('.env')) console.log('  ✓ .env already exists — left untouched');
-else { copyFileSync('.env.example', '.env'); console.log('  ✓ created .env from .env.example\n    → Open .env in a text editor. Read-only work needs nothing. To publish, paste your key after GEO_PRIVATE_KEY=\n      (export it at https://www.geobrowser.io/export-wallet — "Copy key", not the address). Never paste it into a chat.'); }
+else { copyFileSync('.env.example', '.env'); console.log('  ✓ created .env from .env.example\n    → Open .env in a text editor. Read-only work needs nothing. To publish, paste your key after GEO_PRIVATE_KEY=\n      (export it at https://www.geobrowser.io/export-wallet — "Copy key", not the address)\n      for that session only, and put the placeholder back afterwards. Never paste it into a chat.'); }
 
 step('4/6  Skill discovery stubs (Claude Code)');
 run(process.execPath, ['tools/gen-skill-stubs.mjs']);

@@ -7,8 +7,9 @@ skills' scripts import. Read this file first; it routes you to the rest.
 
 Content flows **Geo → Notion → Geo**: a scoped slice of the graph is mirrored into Notion,
 curated there by editors and agents, and published back only through gated, reviewed skills.
-Every write to Geo is a proposal — dry-run, shown to the editor, published on their explicit
-word. You are the step before that word, never the word itself.
+Every write to Geo is gated — dry-run, shown to the editor, published on their explicit word.
+In a personal space that publish is live at once; in a DAO space it becomes a proposal. You are
+the step before that word, never the word itself.
 
 ## Working agreements
 
@@ -63,7 +64,9 @@ These apply to every agent in this toolkit, on every host.
    `publish`. Nothing in this repository may issue that on their behalf.
 6. **Never read, print or accept the wallet key.** Checking that `.env` exists and which
    variable *names* it holds is allowed; reading a value is not. If a key ever appears in a
-   chat, tell the editor to export a fresh wallet.
+   chat, stop and tell the editor it is compromised. Exporting the wallet again returns the
+   same key, so it cannot be rotated: they warn co-editors to vote NO on anything unexpected,
+   create a new Geo account, and have co-editors add the new identity and remove the old one.
 7. **Claim and entity names never end with a period.** Descriptions do; names don't.
 8. **Notion moves can silently drop relations.** Recreate pages with properties set at
    creation, or capture relation values first.

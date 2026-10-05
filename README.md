@@ -33,7 +33,7 @@ node tools/install.mjs --host codex
 node tools/install.mjs --host all
 ```
 
-It checks Node 22+, runs `npm ci`, creates `.env` from the example **without filling in any
+It checks Node 22+, runs `npm ci --ignore-scripts`, creates `.env` from the example **without filling in any
 key**, generates the skill discovery stubs, deploys full skills to other hosts if asked, then
 runs the doctor. Then start a **new session in this folder** — skills and agents load at
 startup.
@@ -42,9 +42,11 @@ startup.
 
 Both are in [`SETUP.md`](SETUP.md). In short:
 
-1. **Your wallet key** — only if you want to publish to Geo. Export it at
+1. **Your wallet key** — only for the sessions where you publish to Geo. Export it at
    [geobrowser.io/export-wallet](https://www.geobrowser.io/export-wallet), open `.env`, paste
-   it after `GEO_PRIVATE_KEY=`. **Never paste it into a chat. Your agent must never ask for it.**
+   it after `GEO_PRIVATE_KEY=`, and put the placeholder back when you're done. Lookups, press
+   reviews, mirrors and claim grouping never need it, and a key that isn't in `.env` can't leak
+   from those sessions. **Never paste it into a chat. Your agent must never ask for it.**
 2. **Network allowlists** on sandboxed hosts (Claude Desktop, Codex): `api-testnet.geobrowser.io`
    and, for Notion work, `api.notion.com`. Claude Code needs neither.
 
@@ -75,6 +77,7 @@ the signal to name the skill.
 | `AGENTS.md` | The shared instructions every agent reads first — working agreements, hard rules, skill routing |
 | `CLAUDE.md` | `@AGENTS.md` plus what Claude Code does differently |
 | `SETUP.md` | The human steps: key, Notion integration, allowlists, per host |
+| `SECURITY.md` | How to report a security problem privately, and what is in scope |
 | `skills/` | The 15 skill contracts, in the canonical toolkit's layout (`actionable/` can write Geo; `non-actionable/` cannot) |
 | `.claude/skills/` | Discovery stubs so Claude Code finds every skill, plus three vendored general-purpose skills |
 | `.claude/agents/` | The four subagent definitions |
@@ -90,7 +93,7 @@ the signal to name the skill.
 
 ## The rules that never bend
 
-- **Every write to Geo is a proposal.** Duplicate check → dry-run → the editor types `publish`. The agent never types it.
+- **Every write to Geo is gated.** Duplicate check → dry-run → the editor types `publish`. The agent never types it. In a personal space the edit is live as soon as it publishes; in a DAO space it becomes a proposal.
 - **Never write to Geo by hand.** The skills carry the safeguards; a hand-rolled script skips them.
 - **Deletion only through `geo-clean`**, behind an orphan check and a human confirmation.
 - **The wallet key stays out of every chat, prompt and document.**
@@ -100,6 +103,41 @@ The full set is in `AGENTS.md`. The safeguards are guides, not guarantees — a 
 prompt can bypass any of them, because you control your own agent. Real control lives in the
 editorial layer: canonical spaces are gated by member votes. Be deliberate in personal and
 dataset spaces, which are not.
+
+## Recommended personal settings
+
+The repository's `.claude/settings.json` protects you only as long as the repository does: a bad
+merge or a look-alike copy could ship weaker rules. A **deny** rule in your own Claude Code
+settings can't be overridden by any project, so add this to `~/.claude/settings.json`
+(Windows: `%USERPROFILE%\.claude\settings.json`), merged into anything already there:
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Read(//**/.env)",
+      "Read(//**/.env.*)",
+      "Bash(curl *)",
+      "Bash(curl.exe *)",
+      "Bash(wget *)"
+    ]
+  }
+}
+```
+
+`//**/` means anywhere on this computer, so these rules apply in every project you open: Claude
+Code can't read any `.env` file, `.env.example` included, or run `curl` or `wget`. If you need
+`curl` in other projects, keep only the two `Read` lines.
+
+Two optional additions:
+
+- **On Windows**, if you don't use Claude Code's PowerShell tool, add `"PowerShell"` to the same
+  `deny` list. Read rules don't fully cover file access through PowerShell pipelines.
+- **`"env": { "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1" }`** strips the credentials Claude Code
+  recognises, such as Anthropic and cloud-provider keys, from the commands it runs. It does not
+  cover the Geo key or the Notion token, which the scripts load from `.env` themselves.
+
+Check it took effect: in any folder, ask Claude Code to run `curl --version`. It should be denied.
 
 ## Keeping it current
 
