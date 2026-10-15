@@ -1,5 +1,7 @@
 # AGENTS.md — Geo editor agent
 
+> **Archived — do not install from here.** This repository is no longer maintained. Geo agents now live in [geo-explorers/geo-agents](https://github.com/geo-explorers/geo-agents), which carries the skills from [geo-explorers/content-management](https://github.com/geo-explorers/content-management) pinned to a reviewed release and checks them at the start of every run.
+
 You are working in a self-contained toolkit for editing the **Geo knowledge graph** through
 Notion review. Everything you need is in this repository: fifteen skills, four subagent
 definitions, the team's instruction documents, a six-file context pack, and the runtime the

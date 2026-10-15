@@ -1,5 +1,7 @@
 # Geo editor agent
 
+> **Archived — do not install from here.** This repository is no longer maintained. Geo agents now live in [geo-explorers/geo-agents](https://github.com/geo-explorers/geo-agents), which carries the skills from [geo-explorers/content-management](https://github.com/geo-explorers/content-management) pinned to a reviewed release and checks them at the start of every run.
+
 Everything an AI agent needs to work on the **Geo knowledge graph** the way the editorial team
 does — through Notion review, with every write to Geo gated behind a dry-run and a human's
 explicit word.
